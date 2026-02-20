@@ -1,0 +1,15 @@
+{
+  "name": "Lista de Compras",
+  "short_name": "MiLista",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1e1e1e",
+  "theme_color": "#00ff88",
+  "icons": [
+    {
+      "src": "icono.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

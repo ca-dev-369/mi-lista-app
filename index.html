@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🛒 Mi Lista</title>
+  <link rel="stylesheet" href="estilo.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icono.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+  <h1>🛒 Mi Lista de Compras</h1>
+
+  <section>
+    <input type="text" id="producto" placeholder="Producto">
+    <input type="number" id="cantidad" placeholder="Cantidad" value="1" min="1">
+    <input type="number" id="precio" placeholder="Precio" step="0.01">
+    <select id="categoria">
+      <option>Frutas</option>
+      <option>Verduras</option>
+      <option>Lácteos</option>
+      <option>Panadería</option>
+      <option>Otros</option>
+    </select>
+    <button onclick="agregarProducto()">➕ Agregar producto</button>
+  </section>
+
+  <section>
+    <h2>🧾 Lista actual</h2>
+    <ul id="lista"></ul>
+    <p id="total">💰 Total: $0.00</p>
+    <textarea id="notas" placeholder="Notas adicionales..."></textarea>
+    <button onclick="guardarLista()">💾 Guardar borrador</button>
+    <button onclick="finalizarCompra()">✅ Finalizar compra</button>
+  </section>
+
+  <section id="tickets">
+    <!-- Aquí se mostrarán los tickets guardados -->
+  </section>
+
+  <section>
+    <h2>📊 Gráfica de compras</h2>
+    <canvas id="graficaCompras" width="300" height="200"></canvas>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+  <script>
+    // Mostrar tickets al cargar
+    window.onload = () => {
+      cargarBorrador();
+      mostrarTickets();
+      mostrarGrafica();
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>🧾 Ticket de Compra</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #000;
+      color: #00ff88;
+      padding: 20px;
+      max-width: 480px;
+      margin: auto;
+      border: 1px dashed #00ff88;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 10px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .producto {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dotted #00ff88;
+      padding: 4px 0;
+    }
+
+    .totales {
+      margin-top: 20px;
+      border-top: 1px dashed #00ff88;
+      padding-top: 10px;
+    }
+
+    .totales div {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .notas {
+      margin-top: 20px;
+      font-style: italic;
+      font-size: 14px;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px dashed #00ff88;
+      margin: 10px 0;
+    }
+
+    button {
+      display: block;
+      margin: 20px auto 0;
+      padding: 10px 20px;
+      font-family: inherit;
+      font-size: 16px;
+      background: #00cc88;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #00aa77;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <h1>🧾 CA-Copilot</h1>
+  <div id="ticket"></div>
+  <button onclick="descargarPDF()">📄 Descargar como PDF</button>
+
+  <script>
+    let ticket = null;
+
+    function mostrarTicket(ticket) {
+      const contenedor = document.getElementById("ticket");
+      const hora = new Date().toLocaleTimeString("es-MX", { hour: '2-digit', minute: '2-digit' });
+      const numero = ticket.numero !== undefined
+        ? `#${String(ticket.numero).padStart(4, "0")}`
+        : "#0000";
+
+      contenedor.innerHTML = `
+        <p><strong>Fecha:</strong> ${ticket.fecha} ${hora}<br>
+        <strong>Ticket:</strong> ${numero}</p>
+        <hr>
+      `;
+
+      let subtotal = 0;
+      ticket.productos.forEach(p => {
+        subtotal += p.subtotal;
+        contenedor.innerHTML += `
+          <div class="producto">
+            <span>${p.nombre} (${p.cantidad} x
+
+{p.precio.toFixed(2)})</span>
+            <span>
+
+{p.subtotal.toFixed(2)}</span>
+          </div>
+        `;
+      });
+
+      const iva = subtotal * 0.16;
+      const total = subtotal + iva;
+
+      contenedor.innerHTML += `
+        <div class="totales">
+          <div><strong>Subtotal:</strong><span>
+
+{subtotal.toFixed(2)}</span></div>
+          <div><strong>IVA (16%):</strong><span>
+
+{iva.toFixed(2)}</span></div>
+          <div><strong>Total:</strong><span>$${total.toFixed(2)}</span></div>
+        </div>
+      `;
+
+      if (ticket.notas) {
+        contenedor.innerHTML += `<div class="notas">📝 ${ticket.notas}</div>`;
+      }
+
+      contenedor.innerHTML += `<hr><p style="text-align:center;">Gracias por tu compra 🛒</p>`;
+    }
+
+    function descargarPDF() {
+      const elemento = document.getElementById("ticket");
+      const opciones = {
+        margin: 0.5,
+        filename: `ticket_${String(ticket.numero).padStart(4, "0")}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+      html2pdf().set(opciones).from(elemento).save();
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const data = params.get("data");
+    if (data) {
+      ticket = JSON.parse(decodeURIComponent(data));
+      mostrarTicket(ticket);
+    }
+  </script>
+</body>
+</html>
